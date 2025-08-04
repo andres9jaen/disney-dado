@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dado Giratorio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: sans-serif;
+      text-align: center;
+      padding-top: 100px;
+    }
+    #resultado {
+      font-size: 2em;
+      margin-top: 30px;
+    }
+    button {
+      margin-top: 40px;
+      font-size: 1.5em;
+      padding: 10px 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎲 Tirando el dado...</h1>
+  <div id="resultado">⏳</div>
+  <button onclick="window.location.href='/'">Volver</button>
+
+  <script>
+    async function tirar() {
+      const res = await fetch("/config");
+      const data = await res.json();
+
+      const opciones = [];
+      data.dice_faces.forEach(f => {
+        const cantidad = Math.round((f.prob || 0.1) * 100);
+        for (let i = 0; i < cantidad; i++) {
+          opciones.push(f.icon + " " + f.text);
+        }
+      });
+
+      const aleatorio = opciones[Math.floor(Math.random() * opciones.length)];
+      setTimeout(() => {
+        document.getElementById("resultado").textContent = aleatorio || "🎲 Nada configurado";
+      }, 1500);
+    }
+
+    tirar();
+  </script>
+</body>
+</html>
