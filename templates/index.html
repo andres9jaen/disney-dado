@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dado QR</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <img src="/static/banner.jpg" class="banner" alt="Bienvenido" />
+    <h1 id="mensaje"></h1>
+    <button id="jugar">🎲 PROBAR SUERTE</button>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const res = await fetch("/config");
+      const config = await res.json();
+      document.getElementById("mensaje").textContent = config.welcome_message;
+
+      document.getElementById("jugar").onclick = () => {
+        window.location.href = "/static/dado.html";
+      };
+    });
+  </script>
+</body>
+</html>
