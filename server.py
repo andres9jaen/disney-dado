@@ -7,7 +7,7 @@ PORT = int(os.environ.get("PORT", 8000))
 
 class CustomHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
-        if self.path == "/":
+        if self.path == "/" or self.path == "/index":
             self.path = "/templates/index.html"
         elif self.path == "/admin":
             self.path = "/templates/admin.html"
