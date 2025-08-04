@@ -2,32 +2,57 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Dado Giratorio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <style>
     body {
-      background-color: black;
+      background-color: #000;
       color: white;
-      font-family: sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       text-align: center;
-      padding-top: 100px;
+      padding: 50px;
+    }
+    h1 {
+      font-size: 2em;
+      margin-bottom: 40px;
+    }
+    #dado {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto;
+      background: url('https://media.tenor.com/qy_9UOKRBAQAAAAC/dado.gif') no-repeat center center;
+      background-size: contain;
+      animation: girar 1.5s ease-out;
     }
     #resultado {
-      font-size: 2em;
-      margin-top: 30px;
-    }
-    button {
+      font-size: 1.8em;
       margin-top: 40px;
-      font-size: 1.5em;
-      padding: 10px 20px;
+      opacity: 0;
+      transition: opacity 0.8s ease-in;
+    }
+    #volver {
+      margin-top: 50px;
+      padding: 12px 25px;
+      font-size: 1em;
+      font-weight: bold;
+      border-radius: 10px;
+      border: none;
+      background-color: #ffcc00;
+      color: black;
+      cursor: pointer;
+    }
+    @keyframes girar {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
   <h1>🎲 Tirando el dado...</h1>
-  <div id="resultado">⏳</div>
-  <button onclick="window.location.href='/'">Volver</button>
+  <div id="dado"></div>
+  <div id="resultado"></div>
+  <button id="volver" onclick="window.location.href='/'" style="display:none;">Volver</button>
 
   <script>
     async function tirar() {
@@ -38,14 +63,19 @@
       data.dice_faces.forEach(f => {
         const cantidad = Math.round((f.prob || 0.1) * 100);
         for (let i = 0; i < cantidad; i++) {
-          opciones.push(f.icon + " " + f.text);
+          opciones.push((f.icon || '') + ' ' + f.text);
         }
       });
 
-      const aleatorio = opciones[Math.floor(Math.random() * opciones.length)];
+      const aleatorio = opciones[Math.floor(Math.random() * opciones.length)] || '🎲 Nada configurado';
+
       setTimeout(() => {
-        document.getElementById("resultado").textContent = aleatorio || "🎲 Nada configurado";
-      }, 1500);
+        document.getElementById("dado").style.display = "none";
+        const resultado = document.getElementById("resultado");
+        resultado.innerHTML = aleatorio;
+        resultado.style.opacity = 1;
+        document.getElementById("volver").style.display = "inline-block";
+      }, 1800);
     }
 
     tirar();
