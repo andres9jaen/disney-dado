@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dado Giratorio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background-color: #111;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      margin-top: 40px;
+    }
+    .scene {
+      width: 200px;
+      height: 200px;
+      margin: 50px auto;
+      perspective: 800px;
+    }
+    .cube {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: roll 4s ease-out forwards;
+    }
+    .face {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      background: linear-gradient(145deg, #ffdd57, #ff6f61);
+      border: 3px solid #fff;
+      border-radius: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #111;
+      box-shadow: 0 0 20px #ffcc00;
+      text-align: center;
+      padding: 10px;
+    }
+    .face1 { transform: rotateY(0deg) translateZ(100px); }
+    .face2 { transform: rotateY(90deg) translateZ(100px); }
+    .face3 { transform: rotateY(180deg) translateZ(100px); }
+    .face4 { transform: rotateY(-90deg) translateZ(100px); }
+    .face5 { transform: rotateX(90deg) translateZ(100px); }
+    .face6 { transform: rotateX(-90deg) translateZ(100px); }
+
+    @keyframes roll {
+      0% { transform: rotateX(0) rotateY(0); }
+      100% { transform: rotateX(1080deg) rotateY(2160deg); }
+    }
+
+    #volver {
+      padding: 12px 25px;
+      font-size: 1em;
+      margin-top: 40px;
+      border: none;
+      border-radius: 8px;
+      background: #ffcc00;
+      color: black;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎲 Tirando el dado...</h1>
+  <div class="scene">
+    <div class="cube" id="cube">
+      <div class="face face1" id="f1">...</div>
+      <div class="face face2" id="f2">...</div>
+      <div class="face face3" id="f3">...</div>
+      <div class="face face4" id="f4">...</div>
+      <div class="face face5" id="f5">...</div>
+      <div class="face face6" id="f6">...</div>
+    </div>
+  </div>
+  <button id="volver" onclick="window.location.href='/'">Volver</button>
+
+  <script>
+    async function cargarCaras() {
+      const res = await fetch('/config');
+      const data = await res.json();
+      const caras = data.dice_faces.slice(0, 6); // Máximo 6 caras
+      const indices = [1,2,3,4,5,6];
+
+      for (let i = 0; i < caras.length; i++) {
+        const cara = caras[i];
+        const emoji = cara.emoji || '';
+        const texto = cara.text;
+        document.getElementById('f'+indices[i]).textContent = `${emoji} ${texto}`;
+      }
+    }
+    cargarCaras();
+  </script>
+</body>
+</html>
