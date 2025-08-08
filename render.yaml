@@ -1,9 +1,0 @@
-services:
-  - type: web
-    name: disney-dado
-    runtime: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: python server.py
-    env:
-      - key: PORT
-        value: "8000"
