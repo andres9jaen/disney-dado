@@ -1,62 +1,50 @@
-import http.server
-import socketserver
+from flask import Flask, request, jsonify, send_from_directory, render_template
 import json
 import os
 
-PORT = int(os.environ.get("PORT", 8000))
+app = Flask(__name__, static_folder="static", template_folder="templates")
 
-class CustomHandler(http.server.SimpleHTTPRequestHandler):
-    def do_GET(self):
-        if self.path == "/" or self.path == "/index":
-            self.path = "/templates/index.html"
-        elif self.path == "/admin":
-            self.path = "/templates/admin.html"
-        elif self.path == "/config":
-            try:
-                with open("config.json", "r", encoding="utf-8") as f:
-                    config = f.read().encode("utf-8")
-                self.send_response(200)
-                self.send_header("Content-Type", "application/json; charset=utf-8")
-                self.end_headers()
-                self.wfile.write(config)
-            except Exception as e:
-                self.send_error(500, f"Error reading config.json: {str(e)}")
-            return
-        else:
-            return super().do_GET()
+CONFIG_PATH = "config.json"
 
-    def do_POST(self):
-        if self.path == "/update_config":
-            try:
-                length = int(self.headers.get("Content-Length", 0))
-                data = self.rfile.read(length)
-                new_config = json.loads(data.decode("utf-8"))
+def cargar_config():
+    with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
 
-                if new_config.get("password") != "admin":
-                    self.send_response(403)
-                    self.end_headers()
-                    self.wfile.write(b'{"error": "Unauthorized"}')
-                    return
+def guardar_config(data):
+    with open(CONFIG_PATH, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
 
-                # Guardar configuración nueva en disco
-                with open("config.json", "w", encoding="utf-8") as f:
-                    json.dump({
-                        "welcome_message": new_config.get("welcome_message"),
-                        "dice_faces": new_config.get("dice_faces")
-                    }, f, indent=2, ensure_ascii=False)
+@app.route("/")
+def index():
+    return render_template("index.html")
 
-                self.send_response(200)
-                self.send_header("Content-Type", "application/json")
-                self.end_headers()
-                self.wfile.write(b'{"status": "ok"}')
+@app.route("/admin")
+def admin():
+    return render_template("admin.html")
 
-            except Exception as e:
-                self.send_error(500, f"Error updating config.json: {str(e)}")
+@app.route("/config")
+def get_config():
+    try:
+        config = cargar_config()
+        return jsonify(config)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-# Asegurarse de que la ruta base es la del script
-os.chdir(os.path.dirname(__file__))
+@app.route("/update_config", methods=["POST"])
+def update_config():
+    try:
+        new_config = request.get_json()
+        if new_config.get("password") != "admin":
+            return jsonify({"error": "Unauthorized"}), 403
 
-# Iniciar el servidor
-with socketserver.TCPServer(("", PORT), CustomHandler) as httpd:
-    print(f"🎲 Servidor corriendo en el puerto {PORT}")
-    httpd.serve_forever()
+        guardar_config({
+            "welcome_message": new_config.get("welcome_message"),
+            "dice_faces": new_config.get("dice_faces")
+        })
+        return jsonify({"status": "ok"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    app.run(host="0.0.0.0", port=port)
