@@ -1,9 +1,8 @@
-from flask import Flask, request, jsonify, send_from_directory, render_template
+from flask import Flask, request, jsonify, render_template
 import json
 import os
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
-
 CONFIG_PATH = "config.json"
 
 def cargar_config():
