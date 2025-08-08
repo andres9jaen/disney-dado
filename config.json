@@ -1,0 +1,36 @@
+{
+  "welcome_message": "Bienvenido a Disneyland, ¿quieres probar suerte en nuestro juego?",
+  "dice_faces": [
+    {
+      "text": "Sigue a @andresherreracollado en Instagram",
+      "emoji": "📷",
+      "icon": "icons/instagram.png",
+      "probability": 1
+    },
+    {
+      "text": "Dale un beso a ...",
+      "emoji": "💋",
+      "probability": 1
+    },
+    {
+      "text": "Haz un brindis por tu persona favorita",
+      "emoji": "🥂",
+      "probability": 1
+    },
+    {
+      "text": "Imita un personaje de Disney",
+      "emoji": "🎭",
+      "probability": 1
+    },
+    {
+      "text": "Cuenta una anécdota divertida",
+      "emoji": "📖",
+      "probability": 1
+    },
+    {
+      "text": "Baila como si nadie te mirara",
+      "emoji": "💃",
+      "probability": 1
+    }
+  ]
+}
